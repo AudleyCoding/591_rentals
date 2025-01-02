@@ -76,17 +76,3 @@ def scrape_all_pages():
         page += 1  # Go to the next page
 
     return filtered_links
-
-# def main():
-#     """Main function to scrape and filter house listings."""
-#     filtered_links = scrape_all_pages()
-
-#     if filtered_links:
-#         print(f"\nFound {len(filtered_links)} houses updated within the last 6 hours:")
-#         for link in filtered_links:
-#             print(f"Link: {link}")
-#     else:
-#         print("No houses updated within the last 6 hours.")
-
-# if __name__ == "__main__":
-#     main()
