@@ -1,24 +1,10 @@
-from scrape591 import scrape_all_pages
-from notify591 import send_links_via_line
+from scrape591 import scrape_all_sites
 
 def main():
-    # Replace with your Line Notify token
-    # LINE_TOKEN = "YOUR_LINE_NOTIFY_TOKEN"
-    # notifier = send_links_via_line(LINE_TOKEN)
-
-    # Scrape house links
-    house_links = scrape_all_pages()
-
-    if house_links:
-        print(f"\nFound {len(house_links)} houses updated within the last 6 hours.")
-        for link in house_links:
-            print(f"Link: {link}")
-        
-        # Send the links via LINE
-        send_links_via_line(house_links)
-    else:
-        print("No houses updated within the last 6 hours.")
+    # Scrape house links for all sites
+    print("Starting the scraping process for all sites...")
+    scrape_all_sites()
+    print("Scraping process completed.")
 
 if __name__ == "__main__":
     main()
-

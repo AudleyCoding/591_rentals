@@ -10,26 +10,37 @@ from notify591 import send_line_message
 # Load environment variables from .env file
 load_dotenv()
 
-# Base URL for pagination
-BASE_URL = os.getenv("BASE_URL")
+# Get all BASE_URLs
+BASE_URLS = {key: value for key, value in os.environ.items() if key.startswith("BASE_URL_")}
+
+# Custom messages for each BASE_URL
+BASE_URL_MESSAGES = {
+    "BASE_URL_1": "🏠 New Storefronts for RENT.\n",
+    "BASE_URL_2": "🏠 New Storefronts for SALE\n",
+    "BASE_URL_3": "🏠 New APARTMENTS.\n",
+}
 
 # Custom Headers
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
 }
+# Validate consistency between BASE_URL keys and BASE_URL_MESSAGES
+def validate_base_url_messages():
+    """Ensure every BASE_URL key has a corresponding custom message."""
+    for base_url_key in BASE_URLS.keys():
+        if base_url_key not in BASE_URL_MESSAGES:
+            BASE_URL_MESSAGES[base_url_key] = "🏠 Forgot custom msg for this URL's listings.:n"
 
-def fetch_houses(page):
+validate_base_url_messages()
+
+def fetch_houses(base_url, page):
     """Fetch house listings from the given page."""
-    if not BASE_URL:
-        print("Error: BASE_URL is not set in the environment.")
-        return []
-
-    response = requests.get(BASE_URL.format(page), headers=HEADERS)
+    response = requests.get(base_url.format(page), headers=HEADERS)
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, "html.parser")
         return soup.find_all('div', class_='item-info')  # Adjust the class as needed based on actual HTML
     else:
-        print(f"Failed to fetch page {page}, status code: {response.status_code}")
+        print(f"Failed to fetch page {page} from {base_url}, status code: {response.status_code}")
         return []
 
 def parse_update_time(update_text):
@@ -59,31 +70,42 @@ def parse_house(house):
         print(f"Error parsing house: {e}")
         return None
 
-def scrape_all_pages():
-    """Scrape all pages and collect house links updated within 6 hours."""
+def scrape_for_url(base_url_key, base_url):
+    """
+    Scrape all pages for a specific BASE_URL and notify about new listings.
+    
+    Parameters:
+    - base_url_key: The key identifying the BASE_URL in the environment.
+    - base_url: The BASE_URL to scrape.
+    """
     page = 1
     filtered_links = []
-
-    # Load previously scraped links
     existing_links = load_links()
 
     while True:
-        print(f"Fetching page {page}...")
-        houses = fetch_houses(page)
+        print(f"Fetching page {page} from {base_url}...")
+        houses = fetch_houses(base_url, page)
 
         if not houses:
-            print(f"No houses found on page {page}. Stopping.")
+            print(f"No houses found on page {page} for {base_url}. Stopping.")
             break
 
         for house in houses:
             link = parse_house(house)
             if link and is_new_link(link, existing_links):
                 filtered_links.append(link)
+                message = BASE_URL_MESSAGES.get(base_url_key, "🏠 New rental listing:\n") + link
+                send_line_message(message)
 
-        page += 1  # Go to the next page
+        page += 1
     
     # Save new links to the database
     if filtered_links:
         save_links(filtered_links)
 
-    return filtered_links
+def scrape_all_sites():
+    """
+    Iterate through all BASE_URLs in the environment and scrape each site for new listings.
+    """
+    for base_url_key, base_url in BASE_URLS.items():
+        scrape_for_url(base_url_key, base_url)
