@@ -31,4 +31,4 @@ jobs:
         LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
       run: |
         source .venv/bin/activate
-        python 591_rentals/main.py
+        python main.py
