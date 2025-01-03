@@ -1,0 +1,38 @@
+name: Run Program on Schedule
+
+on:   
+  workflow_dispatch:  # Allows manual triggering
+  schedule:
+    # Cron schedule: Run at 6 AM, 12 PM, 6 PM, and 12 AM UTC
+    - cron: "0 6,12,18,0 * * *"
+
+jobs:
+  run-program:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Debug directory structure
+      run: |
+        echo "Current working directory: $(pwd)"
+        ls -R  # List all files and folders recursively
+
+    - name: Set up Python environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run the script
+      env:
+        BASE_URL: ${{ secrets.BASE_URL }}
+        LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+      run: |
+        echo "Current working directory: $(pwd)"
+        ls -R  # List all files and folders recursively
+        python main.py
