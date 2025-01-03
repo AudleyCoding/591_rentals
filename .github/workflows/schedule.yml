@@ -1,0 +1,30 @@
+name: Run Program on Schedule
+
+on:
+  schedule:
+    # Cron schedule: Run at 6 AM, 12 PM, 6 PM, and 12 AM UTC
+    - cron: "0 6,12,18,0 * * *"
+
+jobs:
+  run-program:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Run the script
+      run: |
+        source .venv/bin/activate
+        python 591_rentals/main.py
