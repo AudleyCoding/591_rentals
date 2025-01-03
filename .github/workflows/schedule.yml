@@ -14,6 +14,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Debug directory structure
+      run: |
+        echo "Current working directory: $(pwd)"
+        ls -R  # List all files and folders recursively
+
     - name: Set up Python environment
       uses: actions/setup-python@v4
       with:
@@ -28,5 +33,4 @@ jobs:
         BASE_URL: ${{ secrets.BASE_URL }}
         LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
       run: |
-        source .venv/bin/activate
         python main.py
