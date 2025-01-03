@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+import time
 
 # Load environment variables from .env file
 load_dotenv()
@@ -33,6 +34,7 @@ def send_links_via_line(links):
     """
     for link in links:
         send_line_message(f"🏠 New rental listing:\n{link}")
+        time.sleep(1)  # Add a 1-second delay between messages
     
     # Send final confirmation message
-    send_line_message("👍👍👍👍👍👍👍👍")
+    send_line_message("👍------👍------👍")
