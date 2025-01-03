@@ -2,6 +2,10 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from database import load_links, save_links, is_new_link
+from notify591 import send_line_message
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -60,6 +64,9 @@ def scrape_all_pages():
     page = 1
     filtered_links = []
 
+    # Load previously scraped links
+    existing_links = load_links()
+
     while True:
         print(f"Fetching page {page}...")
         houses = fetch_houses(page)
@@ -70,9 +77,13 @@ def scrape_all_pages():
 
         for house in houses:
             link = parse_house(house)
-            if link:
+            if link and is_new_link(link, existing_links):
                 filtered_links.append(link)
 
         page += 1  # Go to the next page
+    
+    # Save new links to the database
+    if filtered_links:
+        save_links(filtered_links)
 
     return filtered_links
