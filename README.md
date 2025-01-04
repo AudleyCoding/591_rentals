@@ -1,12 +1,8 @@
-Here's a draft README file based on the information you've provided so far. If anything is missing or incorrect, let me know, and I can refine it further.
-
----
-
 # Real Estate Scraper & Notifier
 
 ## Overview
 
-This project is a Python-based web scraper designed to fetch and filter real estate listings from multiple websites (or URLs). The scraper checks if new listings meet specific criteria (updated within the last 6 hours) and sends notifications for new listings via LINE Notify. The project is modular, making it easy to customize, extend, and maintain.
+This project is a Python-based web scraper designed to fetch and filter real estate listings from multiple webpages (or URLs). The scraper checks if new listings meet specific criteria (updated within the last 6 hours) and sends notifications for new listings via LINE Notify. The project is modular, making it easy to customize, extend, and maintain.
 
 ---
 
@@ -33,7 +29,7 @@ This project is a Python-based web scraper designed to fetch and filter real est
    ```bash
    pip install -r requirements.txt
    ```
-3. **Environment File**: Create a `.env` file with the following variables:
+3. **Environment File**: Create a `.env` file (create repository secrets for scheduled running with GitHub Actions) with the following variables:
    ```plaintext
    BASE_URL_1=https://example.com/storefronts-for-rent?page={}
    BASE_URL_2=https://example.com/storefronts-for-sale?page={}
@@ -111,4 +107,7 @@ Feel free to submit issues or pull requests to improve the scraper or add new fe
 
 ---
 
-Does this cover everything you need, or would you like to add more details?
+## Acknowledgments
+This project was inspired by and references the following repositories:
+- [Repository 1](https://github.com/ryk001/Rent591Watcher) by ryk001
+- [Repository 2](https://github.com/peterluo1995125/Rent591/blob/master/591.py) by peterluo1995125
