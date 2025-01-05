@@ -1,10 +1,10 @@
+## scrape591.py
 import os
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from database import load_links, save_links, is_new_link
-from notify591 import send_line_message
-
+from notify591 import send_line_message, send_links_via_line
 
 
 # Load environment variables from .env file
@@ -81,9 +81,10 @@ def scrape_for_url(base_url_key, base_url):
     page = 1
     filtered_links = []
     existing_links = load_links()
+    print(f'Fetching houses from {base_url}')
 
     while True:
-        print(f"Fetching page {page} from {base_url}...")
+        print(f"Fetching page {page}...")
         houses = fetch_houses(base_url, page)
 
         if not houses:
@@ -102,6 +103,9 @@ def scrape_for_url(base_url_key, base_url):
     # Save new links to the database
     if filtered_links:
         save_links(filtered_links)
+    
+    send_line_message("END RENTALS 👍👍👍")
+
 
 def scrape_all_sites():
     """
